@@ -4,37 +4,46 @@ from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 # Create your models here.
 
 class MyUserManager(BaseUserManager):
-	def create_user(self, email, username, first_name, last_name, department=None, password=None):
-		if not email:
-			raise ValueError('Users must have an email address')
-		if not username:
-			raise ValueError('Users must have a username')
+    def create_user(self, email, username, first_name, last_name, department=None,password=None,**kwargs):
+        if not email:
+            raise ValueError('Users must have an email address')
+        if not username:
+            raise ValueError('Users must have a username')
 
-		user = self.model(
+        user = self.model(
             first_name = first_name,
             last_name  = last_name,
             department = department,
             email      = self.normalize_email(email),
-			username   = username
-		)
+            username   = username
+        )
 
-		user.set_password(password)
-		user.save(using=self._db)
-		return user
+        if kwargs.get("is_teacher") != None:
+            user.is_teacher = True
+            user.subject = kwargs['subject']
+        elif kwargs.get("is_student") != None:
+            user.is_student = True
+            user.sap_id = kwargs['sap_id']
+            user.division = kwargs['division']
 
-	def create_superuser(self, email, username, first_name, last_name, password):
-		user = self.create_user(
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+
+    def create_superuser(self, email, username, first_name, last_name, password):
+        user = self.create_user(
             first_name = first_name,
             last_name  = last_name,
-			email      = self.normalize_email(email),
-			password   = password,
-			username   = username
+            email      = self.normalize_email(email),
+            password   = password,
+            username   = username
         )
-		user.is_admin = True
-		user.is_staff = True
-		user.is_superuser = True
-		user.save(using=self._db)
-		return user
+        user.is_admin = True
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
 
 
 class User(AbstractBaseUser):
@@ -80,7 +89,6 @@ class Teacher(User):
 
 class Student(User):
     sap_id      = models.BigIntegerField(primary_key=True)
-    year        = models.CharField(max_length=10)
     division    = models.CharField(max_length=1) 
 
 
