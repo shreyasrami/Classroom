@@ -68,9 +68,7 @@ class User(AbstractBaseUser):
 
     objects = MyUserManager()
 
-    def __str__(self):
-        return self.email
-
+    
     # For checking permissions. to keep it simple all admin have ALL permissons
     def has_perm(self, perm, obj=None):
         return self.is_admin
@@ -79,17 +77,26 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
     
+    def name(self):
+        return self.first_name+' '+self.last_name
+    
+    
    
 
 class Teacher(User):
     subject = models.CharField(max_length=15)
-
     
-
+    def name(self):
+        return self.first_name+' '+self.last_name
+    
+    
 
 class Student(User):
     sap_id      = models.BigIntegerField(primary_key=True)
     division    = models.CharField(max_length=1) 
+
+    def name(self):
+        return self.first_name+' '+self.last_name
 
 
 
