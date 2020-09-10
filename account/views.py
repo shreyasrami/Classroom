@@ -107,7 +107,7 @@ class Login(View):
                 
         if user is not None:
             auth.login(request,user)
-            return render(request,'home.html')
+            return redirect('quiz/')
 
         else:
             context = {
