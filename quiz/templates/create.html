@@ -11,21 +11,10 @@
         <input type="hidden" value="{{ quiz }}" name="object">
         {{ form.as_p }}
         {% if last %}
-        <button type="submit" id="sub" data-url="{% url 'index' %}">Submit</button>
+            <button type="submit">Submit</button>
         {% else %}
-        <button type="submit">Next</button>
+            <button type="submit">Next</button>
         {% endif %} 
     </form>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript">
-        $(function(){
-            $('#sub').click(function(event){
-                url = $(this).data('url')
-                event.preventDefault()
-                window.location.replace(url)
-            })
-        })
-    </script>
 </body>
 </html>

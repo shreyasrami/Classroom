@@ -10,7 +10,7 @@ class Quiz(models.Model):
     total_marks = models.IntegerField()
 
     def __str__(self):
-        return self.topic
+        return self.topic + '_' + str(self.id)
     
     class Meta:
         verbose_name_plural = 'Quizzes'
@@ -25,10 +25,12 @@ class Question(models.Model):
     choice4 = models.CharField(max_length=30)
     correct_choice = models.CharField(max_length=30)
 
-    
+    def __str__(self):
+        return self.quiz.topic + '_' + str(self.id)
 
     
 
+    
 class Answer(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     question = models.ForeignKey('Question',on_delete=models.CASCADE)
@@ -41,4 +43,6 @@ class Result(models.Model):
     quiz = models.ForeignKey('Quiz',on_delete=models.CASCADE)
     marks_obtained = models.IntegerField()
 
+    def __str__(self):
+        return self.student.username + '_' + self.quiz.topic
     

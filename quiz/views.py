@@ -1,14 +1,20 @@
+from django.shortcuts import render
+
+# Create your views here.
 from django.db.models import Count
-from django.shortcuts import render,redirect,reverse
+from django.shortcuts import render,redirect
 from .forms import QuizForm,QuestionForm
-from .models import Question,Quiz
-from account.models import Teacher 
+from .models import Question,Quiz,Result,Answer
+from account.models import Teacher,Student
 
 
 # Create your views here.
 
 def index(request):
-    quizzes = Quiz.objects.all()
+    if request.user.is_teacher:
+        quizzes = Quiz.objects.filter(teacher=request.user)
+    else:
+        quizzes = Quiz.objects.all()
     context = {
         'quizzes' : quizzes
     }
@@ -32,7 +38,9 @@ def create(request):
             temp.quiz = instance
             temp.save()
         count = Question.objects.filter(quiz=instance).aggregate(Count('question_text'))['question_text__count'] + 1
-        if count != instance.total_marks :
+        if count > instance.total_marks:
+            return redirect('index')
+        elif count < instance.total_marks:
             context = {
                 'quiz' : quiz_id,
                 'form' : QuestionForm()
@@ -59,15 +67,35 @@ def create(request):
 
 def delete(request,quiz_id):
     Quiz.objects.filter(id=quiz_id).delete()
-    return redirect(request.META['HTTP_REFERER'])
+    return redirect('index')
 
 
 def display(request,quiz_id):
     questions = Question.objects.filter(quiz=quiz_id)
-    context = {
-        'questions' : questions
-    }
-    return render(request,'display.html',context)
+    quiz = Quiz.objects.get(id=quiz_id)
+    if request.method == 'POST':
+        student = Student.objects.get(email=request.user)
+        marks = 0
+        for question in questions:
+            answer = request.POST['choice' + '_' + str(question.id)]
+            Answer.objects.create(student=student,question=question,answer=answer)
+            if answer == question.correct_choice:
+                marks = marks + 1
+        Result.objects.create(student=student,quiz=quiz,marks_obtained=marks)
+        return redirect('index')
+
+    else:
+        student = Student.objects.filter(email=request.user)
+        if Result.objects.filter(quiz=quiz,student__in=student).exists():
+            attempted = True
+        else:
+            attempted = False
+        context = {
+            'attempted' : attempted,
+            'questions' : questions,
+            'quiz' : quiz_id
+        }
+        return render(request,'display.html',context)
 
 def update(request,question_id):
     if request.method == 'POST':
@@ -81,7 +109,7 @@ def update(request,question_id):
             question.choice4 = form.cleaned_data['choice4']
             question.correct_choice = form.cleaned_data['correct_choice']
             question.save()
-        return redirect(reverse('index'))
+        return redirect('index')
 
     else:
         question = Question.objects.get(id=question_id)
