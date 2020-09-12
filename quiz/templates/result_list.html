@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update</title>
+    <title>Results</title>
 </head>
 <body>
     <button><a href="{% url 'logout' %}"><h3>Logout</h3></a></button>
     <button style="margin-left:80px;"><a href="{% url 'index' %}"><h3>Home</h3></a></button><br><br><hr>
-    <form action="{% url 'update' question.id %}" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update</button>
-    </form>
-    
+    {% if results %}
+        {% for result in results %}
+            <a href="{% url 'result' result.quiz.id result.student.sap_id %}">{{ result.student.username }}-{{ result.student.sap_id }}</a><br><hr>
+        {% endfor %}
+    {% else %}
+        <h2>No student has attempted this quiz yet !</h2>
+    {% endif %}
+
 </body>
 </html>

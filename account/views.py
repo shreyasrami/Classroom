@@ -87,16 +87,15 @@ class Register(View):
         }
         
         return render(request,'register.html',context)
-
-            
-            
         
-
+        
 class Login(View):
 
     def get(self,request,*args,**kwargs):
-        
-        return render(request,'login.html')
+        if request.user.is_authenticated:
+            return redirect('quiz/')
+        else:
+            return render(request,'login.html')
 
     
     def post(self,request,*args,**kwargs):
@@ -107,7 +106,13 @@ class Login(View):
                 
         if user is not None:
             auth.login(request,user)
-            return redirect('quiz/')
+            if 'next' in request.POST:
+                try:
+                    return redirect(request.POST.get('next'))
+                except:
+                    return redirect('quiz/')
+            else:
+                return redirect('quiz/')
 
         else:
             context = {
@@ -116,8 +121,6 @@ class Login(View):
             return render(request,'login.html',context)
 
         
-
-
 class Logout(View):
     def get(self,request,*args,**kwargs):
         auth.logout(request)
