@@ -68,7 +68,12 @@ def create(request):
             teacher = Teacher.objects.get(email=request.user)
             quiz = Quiz.objects.create(topic=topic,total_marks=total_marks,teacher=teacher)
             form = QuestionForm()
+            if total_marks == '1':
+                last = True
+            else:
+                last = False
             context = {
+                'last' : last,
                 'form' : form,
                 'quiz' : quiz.id
             }
