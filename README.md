@@ -23,9 +23,8 @@ Students can submit the quiz and view their results.
     (env)$ pip install -r requirements.txt
     ```
 5. Usage of python-decouple to hide confidential stuff
-   In your settings.py :
-   1.Simply create a .env text file on your repository's root directory in the form:
-     Set the parameters in .env file:
+   ####In your settings.py :
+   1.Simply create a .env text file on your repository's root directory and set the parameters in .env file:
      ```shell
      $ SECRET_KEY=ARANDOMSECRETKEY
      $ DEBUG=True/False
