@@ -17,6 +17,7 @@ class Quiz(models.Model):
     
 
 class Question(models.Model):
+
     quiz = models.ForeignKey('Quiz',on_delete=models.CASCADE)
     question_text = models.TextField()
     choice1 = models.CharField(max_length=30)
@@ -30,7 +31,6 @@ class Question(models.Model):
 
     
 
-    
 class Answer(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     question = models.ForeignKey('Question',on_delete=models.CASCADE)
@@ -38,6 +38,7 @@ class Answer(models.Model):
     
     def __str__(self):
         return self.student.username + '_' + str(self.question.id) + '_' + str(self.id)
+
 
 class Result(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)

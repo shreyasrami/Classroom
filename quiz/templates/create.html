@@ -8,7 +8,7 @@
 <body>
     <form action="{% url 'create' %}" method="POST" id="form">
         {% csrf_token %}
-        <input type="hidden" value="{{ quiz }}" name="object">
+        <input type="hidden" value="{{ quiz }}" name="quiz_id">
         {{ form.as_p }}
         {% if last %}
             <button type="submit">Submit</button>

@@ -66,8 +66,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         $(function(){
-            $("#next").click(function(){
-                
+            $("#next").click(function(event){
+                event.preventDefault()
                 var role = $('input[name=choice]:checked').val()
                 if(role == "teacher"){
                     $("#student").hide()
@@ -86,9 +86,6 @@
                 else{
                     alert("Choose your role first !")
                 }
-            })
-            $("#register").click(function(){
-                $("#form").submit()
             })
         })
     </script>

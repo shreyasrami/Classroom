@@ -36,11 +36,20 @@ def create_info(request):
 @login_required(login_url='/')
 def create(request):
     if request.method == 'POST':
-        quiz_id = request.POST['object']
+        quiz_id = request.POST['quiz_id']
         instance = Quiz.objects.get(id=quiz_id)
         form = QuestionForm(request.POST)
         if form.is_valid():
+            correct = form.cleaned_data['correct_choice']
             temp = form.save(commit=False)
+            if correct == '1':
+                temp.correct_choice = form.cleaned_data['choice1']
+            elif correct == '2':
+                temp.correct_choice = form.cleaned_data['choice2']
+            elif correct == '3':
+                temp.correct_choice = form.cleaned_data['choice3']
+            elif correct == '4':
+                temp.correct_choice = form.cleaned_data['choice4']
             temp.quiz = instance
             temp.save()
         count = Question.objects.filter(quiz=instance).aggregate(Count('question_text'))['question_text__count'] + 1
@@ -60,7 +69,7 @@ def create(request):
             return redirect('index')
         
         return render(request,'create.html',context)
-
+        
     else:
         try:
             topic = request.GET['topic']
@@ -103,13 +112,8 @@ def display(request,quiz_id):
             Answer.objects.create(student=student,question=question,answer=answer)
             if answer == question.correct_choice:
                 marks = marks + 1
-        result = Result.objects.create(student=student,quiz=quiz,marks_obtained=marks)
-        answers = Answer.objects.filter(student=student,question__in=questions)
-        context = {
-            'answers' : answers,
-            'result' : result
-        }
-        return render(request,'result.html',context)
+        Result.objects.create(student=student,quiz=quiz,marks_obtained=marks)
+        return redirect('result',quiz_id)
 
     elif request.user.is_student:
         student = Student.objects.get(email=request.user)

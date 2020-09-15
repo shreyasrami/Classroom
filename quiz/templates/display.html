@@ -16,7 +16,7 @@
             <strong>Option 2 : </strong>{{ question.choice2 }} <br>
             <strong>Option 3 : </strong>{{ question.choice3 }} <br>
             <strong>Option 4 : </strong>{{ question.choice4 }} <br>
-            <strong>Correct Answer : </strong>{{ question.correct_choice }} <br><br>
+            <strong>Correct Option : </strong>{{ question.correct_choice }} <br><br>
             <button><a href="{% url 'update' question.id %}">Update</a></button><br><br><br><hr>
         {% endfor %}
     {% else %}

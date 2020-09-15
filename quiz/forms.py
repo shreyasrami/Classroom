@@ -9,7 +9,15 @@ class QuizForm(forms.ModelForm):
         fields = ['topic','total_marks']
 
 class QuestionForm(forms.ModelForm):
+    
+    OPTIONS = (
+        ('1','Option 1'),
+        ('2','Option 2'),
+        ('3','Option 3'),
+        ('4','Option 4'),
 
+    )
+    correct_choice = forms.ChoiceField(choices=OPTIONS,required=True)
     class Meta:
         model = Question
         fields = ['question_text','choice1','choice2','choice3','choice4','correct_choice']
@@ -19,5 +27,5 @@ class QuestionForm(forms.ModelForm):
             "choice2" : "Option 2",
             "choice3" : "Option 3",
             "choice4" : "Option 4",
-            "correct_choice" : "Correct Answer"
+            "correct_choice" : "Correct Option"
         }
