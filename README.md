@@ -22,12 +22,39 @@ Students can submit the quiz and view their results.
     ```shell
     (env)$ pip install -r requirements.txt
     ```
-5. Migrate the database.
+5. Usage of python-decouple to hide confidential stuff
+   In your settings.py :
+   1.Simply create a .env text file on your repository's root directory in the form:
+     Set the parameters in .env file:
+     ```shell
+     $ SECRET_KEY=ARANDOMSECRETKEY
+     $ DEBUG=True/False
+     $ DB_NAME=ARANDOMNAME
+     $ DB_USER=DATABASEUSER
+     $ DB_PASSWORD=ARANDOMPASSWORD
+     $ DB_HOST=127.0.0.1
+     ```
+   2.Import the config object:
+     ```shell
+     $ from decouple import config
+     ```
+     
+   3.Retrieve the configuration parameters in settings.py:
+     ```shell
+     $ SECRET_KEY = config('SECRET_KEY')
+     $ DEBUG = config('DEBUG', cast=bool)
+     $ DB_NAME=config('DB_NAME')
+     $ DB_USER=config('DB_USER')
+     $ DB_PASSWORD=config('DB_PASSWORD')
+     $ DB_HOST=config('DB_HOST')
+     ```
+     
+6. Migrate the database.
     ```shell
     (env)$ python manage.py migrate
     ```
 
-6. Run the local server via:
+7. Run the local server via:
     ```shell
     (env)$ python manage.py runserver
     ```
