@@ -137,16 +137,20 @@ def display(request,quiz_id):
 @login_required(login_url='/')
 def update(request,question_id):
     if request.method == 'POST':
-        form = QuestionForm(request.POST)
         question = Question.objects.get(id=question_id)
+        form = QuestionForm(request.POST,instance=question)
         if form.is_valid():
-            question.question_text = form.cleaned_data['question_text']
-            question.choice1 = form.cleaned_data['choice1']
-            question.choice2 = form.cleaned_data['choice2']
-            question.choice3 = form.cleaned_data['choice3']
-            question.choice4 = form.cleaned_data['choice4']
-            question.correct_choice = form.cleaned_data['correct_choice']
-            question.save()
+            correct = form.cleaned_data['correct_choice']
+            temp = form.save(commit=False)
+            if correct == '1':
+                temp.correct_choice = form.cleaned_data['choice1']
+            elif correct == '2':
+                temp.correct_choice = form.cleaned_data['choice2']
+            elif correct == '3':
+                temp.correct_choice = form.cleaned_data['choice3']
+            elif correct == '4':
+                temp.correct_choice = form.cleaned_data['choice4']
+            temp.save()
         return redirect('display',question.quiz.id)
 
     else:
